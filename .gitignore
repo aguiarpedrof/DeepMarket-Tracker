@@ -6,7 +6,7 @@ __pycache__/
 .Python
 env/
 *.sqlite3
-
+.vs/
 .vscode/
 
 Yolo-Weights/
