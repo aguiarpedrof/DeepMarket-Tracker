@@ -17,8 +17,8 @@ while True:
                     stream=True,
                     classes = 0,
                     conf = 0.15 )
-    #print(f"Versão do PyTorch: {torch.__version__}")
-    #print(f"CUDA disponível: {torch.cuda.is_available()}")
+    
+
     for i in results:
         boxes = i.boxes
 
@@ -38,7 +38,9 @@ while True:
             cls = int(box.cls[0])
             classNames = model.names
             nome_Classe = classNames[cls]
+
             cvzone.putTextRect(imagem, f'{nome_Classe} {conf}',(max(0, x1),max(20, y1)))
+
     cv2.imshow("Video", imagem)
     cv2.waitKey(1)
 
