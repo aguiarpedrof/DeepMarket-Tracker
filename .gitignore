@@ -9,5 +9,20 @@ env/
 .vs/
 .vscode/
 
+# pesos e modelos
 Yolo-Weights/
+*.pt
+
+# videos e dados brutos
 Videos/
+frames_dataset/
+
+# resultados de treino
+runs/
+
+# datasets baixados
+train/
+valid/
+test/
+*.zip
+*.cache
