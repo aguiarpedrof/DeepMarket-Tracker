@@ -12,7 +12,7 @@ if __name__ == '__main__':
     # yolov8n = nano  (mais rápido, menos preciso)
     # yolov8s = small (bom equilíbrio para datasets pequenos/médios)
     # yolov8m = medium
-    model = YOLO("Yolo-Weights/yolov8n.pt")
+    model = YOLO("Yolo-Weights/yolov8s.pt")
 
     # ── Treino ───────────────────────────────────────────────────────────────
     # O Ultralytics aplica augmentation automaticamente a cada época na memória/GPU.
