@@ -12,33 +12,35 @@ if __name__ == '__main__':
     # yolov8n = nano  (mais rápido, menos preciso)
     # yolov8s = small (bom equilíbrio para datasets pequenos/médios)
     # yolov8m = medium
-    model = YOLO("Yolo-Weights/yolov8s.pt")
+    model = YOLO("Yolo-Weights/yolov8n.pt")
 
     # ── Treino ───────────────────────────────────────────────────────────────
     # O Ultralytics aplica augmentation automaticamente a cada época na memória/GPU.
     # Não é necessário gerar variações em disco — mais eficiente e rápido.
     results = model.train(
         # Dataset
-        data="data.yaml",          # aponta para train/valid/test e nomes de classes
+        data="data.yaml",           # aponta para train/valid/test do novo dataset
 
         # Configurações gerais
         epochs=100,                 # aumente para 100 se o dataset for grande
         imgsz=640,
-        batch=16,                  # reduza para 8 se der OOM na GPU
+        batch=-1,                  # reduza para 8 se der OOM na GPU
         device=dispositivo,
         workers=4,                 # threads de carregamento de dados
         project="runs/treino",     # pasta onde os resultados serão salvos
-        name="mercadinho_v1",      # subpasta com métricas, pesos e gráficos
-        exist_ok=True,             # permite reescrever sem erro se já existir
+        name="mercadinho_experimento8",              # novo experimento com o novo dataset
+        exist_ok=False,                 # False garante que cada treino seja salvo separadamente!
+
+        cache=True,
 
         # Augmentations (além do que o Roboflow já fez)
         flipud=0.0,                # Flip vertical — desativado (pessoa de cabeça pra baixo não faz sentido)
-        fliplr=0.5,                # Flip horizontal — 50% das imagens
-        hsv_v=0.4,                 # Variação de brilho (simula dia/noite)
-        hsv_s=0.7,                 # Variação de saturação
-        hsv_h=0.015,               # Leve variação de matiz
+        fliplr=0.7,                # Flip horizontal — 50% das imagens
+        hsv_v=0.6,                 # Variação de brilho (simula dia/noite)
+        hsv_s=0.8,                 # Variação de saturação
+        hsv_h=0.018,               # Leve variação de matiz
         degrees=5.0,               # Rotação leve (câmeras ligeiramente tortas)
-        translate=0.1,             # Translação leve
+        translate=0.15,             # Translação leve
         scale=0.5,                 # Zoom aleatório
         mosaic=1.0,                # Junta 4 imagens numa — muito eficiente para generalização
         mixup=0.0,                 # Mixup desativado (funciona melhor com datasets maiores)

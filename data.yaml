@@ -1,13 +1,13 @@
-train: train/images
-val: valid/images
-test: test/images
+train: ../train/images
+val: ../valid/images
+test: ../test/images
 
-nc: 1
-names: ['Pessoas']
+nc: 2
+names: ['0', '1']
 
 roboflow:
-  workspace: pedros-workspace-qrkmr
-  project: minismart
-  version: 4
-  license: CC BY 4.0
-  url: https://universe.roboflow.com/pedros-workspace-qrkmr/minismart/dataset/4
+  workspace: pedros-workspace-r30ny
+  project: minismartunifei
+  version: 3
+  license: Private
+  url: https://app.roboflow.com/pedros-workspace-r30ny/minismartunifei/3

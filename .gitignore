@@ -9,6 +9,9 @@ env/
 .vs/
 .vscode/
 
+
+.env
+
 # pesos e modelos
 Yolo-Weights/
 *.pt
@@ -16,6 +19,7 @@ Yolo-Weights/
 # videos e dados brutos
 Videos/
 frames_dataset/
+novos_frames*/
 
 # resultados de treino
 runs/
@@ -26,3 +30,14 @@ valid/
 test/
 *.zip
 *.cache
+
+# scripts de treinamento e extracao
+treinar_yolov8.py
+extrair_frames.py
+avaliar_modelo.py
+README.dataset.txt
+
+# Banco de dados local (ignorar scripts e backups)
+banco/
+
+
