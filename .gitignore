@@ -35,4 +35,9 @@ test/
 treinar_yolov8.py
 extrair_frames.py
 avaliar_modelo.py
+README.dataset.txt
+
+# Banco de dados local (ignorar scripts e backups)
+banco/
+
 
