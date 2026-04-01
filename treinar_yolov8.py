@@ -12,7 +12,7 @@ if __name__ == '__main__':
     # yolov8n = nano  (mais rápido, menos preciso)
     # yolov8s = small (bom equilíbrio para datasets pequenos/médios)
     # yolov8m = medium
-    model = YOLO("Yolo-Weights/yolov8n.pt")
+    model = YOLO("Yolo-Weights/yolov8s.pt")
 
     # ── Treino ───────────────────────────────────────────────────────────────
     # O Ultralytics aplica augmentation automaticamente a cada época na memória/GPU.
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         flipud=0.0,                # Flip vertical — desativado (pessoa de cabeça pra baixo não faz sentido)
         fliplr=0.7,                # Flip horizontal — 50% das imagens
         hsv_v=0.6,                 # Variação de brilho (simula dia/noite)
-        hsv_s=0.8,                 # Variação de saturação
+        hsv_s=0.4,                 # Variação de saturação 0.8
         hsv_h=0.018,               # Leve variação de matiz
         degrees=5.0,               # Rotação leve (câmeras ligeiramente tortas)
         translate=0.15,             # Translação leve

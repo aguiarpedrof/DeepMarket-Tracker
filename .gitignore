@@ -1,43 +1,74 @@
+# ==============================================
+# Segredos e variáveis de ambiente
+# ==============================================
+.env
+*.key
+*.pem
+
+# ==============================================
+# Ambiente virtual Python (não subir dependências)
+# ==============================================
 venv/
+env/
+.venv/
+
+# ==============================================
+# Cache do Python (gerado automaticamente)
+# ==============================================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-env/
+
+# ==============================================
+# Banco de dados local (arquivo gerado, não o código)
+# ==============================================
 *.sqlite3
-.vs/
-.vscode/
+*.db
 
-
-.env
-
-# pesos e modelos
+# ==============================================
+# Pesos e modelos YOLO (arquivos pesados)
+# ==============================================
 Yolo-Weights/
 *.pt
+*.onnx
 
-# videos e dados brutos
+# ==============================================
+# Vídeos, frames e dados brutos
+# ==============================================
 Videos/
 frames_dataset/
 novos_frames*/
 
-# resultados de treino
+# ==============================================
+# Resultados e artefatos de treino
+# ==============================================
 runs/
 
-# datasets baixados
+# ==============================================
+# Datasets baixados (pastas padrão do YOLO)
+# ==============================================
 train/
 valid/
 test/
 *.zip
 *.cache
 
-# scripts de treinamento e extracao
-treinar_yolov8.py
-extrair_frames.py
-avaliar_modelo.py
-README.dataset.txt
+# ==============================================
+# Arquivos gerados por IDEs e sistemas
+# ==============================================
+.vscode/
+.vs/
+.idea/
+*.suo
+*.user
+.DS_Store
+Thumbs.db
+desktop.ini
 
-# Banco de dados local (ignorar scripts e backups)
-banco/
-
-
+# ==============================================
+# Logs
+# ==============================================
+*.log
+logs/
