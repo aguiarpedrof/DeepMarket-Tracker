@@ -4,7 +4,9 @@
 .env
 *.key
 *.pem
-
+/extrair_frames.py
+/avaliar_modelo.py
+/sort.py
 # ==============================================
 # Ambiente virtual Python (não subir dependências)
 # ==============================================
