@@ -187,7 +187,7 @@ while True:
         if iden not in estados:
             estados[iden] = {
                 "pos_anterior":    None,
-                "estado":          "Sem Classificação",
+                "estado":          "Sem Classificacao",
                 "contado_entrada": False,
                 "cruzou_A":        False,
                 "cruzou_B":        False,
@@ -210,12 +210,12 @@ while True:
             if cruzamento_B != 0:
                 estados[iden]["cruzou_B"] = True
 
-            if estado_atual == "Sem Classificação" and (estados[iden]["cruzou_A"] or estados[iden]["cruzou_B"]):
+            if estado_atual == "Sem Classificacao" and (estados[iden]["cruzou_A"] or estados[iden]["cruzou_B"]):
                 estados[iden]["estado"] = "CANDIDATO"
                 estado_atual = "CANDIDATO"
 
             if cruzamento_entrada == DIRECAO_ENTRADA:
-                if estado_atual in ("CANDIDATO", "Sem Classificação") and iden not in ids_ja_contados_entrada:
+                if estado_atual in ("CANDIDATO", "Sem Classificacao") and iden not in ids_ja_contados_entrada:
                     ids_ja_contados_entrada.add(iden)
                     estados[iden]["estado"] = "ENTROU"
                     estados[iden]["contado_entrada"] = True
@@ -269,7 +269,7 @@ while True:
                        scale=1.5,
                        thickness=2,
                        offset=10,
-                       colorR=(230, 230, 230))
+                       colorR=(61, 61, 61))
 
     cv2.imshow("Video", imagem)
 
