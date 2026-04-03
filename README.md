@@ -9,26 +9,26 @@
 
 ---
 
-## 📖 A História do Projeto
+## O Início
 
-Tudo começou com uma curiosidade simples: **quantas pessoas entram nesse mercadinho por dia?**
+Comecei esse projeto com um questionamento: **quantas pessoas entram nesse mercadinho por dia?**
 
-O estabelecimento fica em frente ao meu apartamento. Toda vez que olhava pela janela, me perguntava sobre o fluxo de clientes — nos horários de pico, nos dias de semana, à noite. Era uma dúvida genuína, sem nenhuma pretensão maior.
+O estabelecimento fica em frente ao meu apartamento. Toda vez me perguntava sobre o fluxo de clientes, nos dias de semana, à noite. Era uma dúvida genuína, sem nenhum objetivo.
 
-Um amigo meu, que já trabalhava com tecnologia, me ouviu falar sobre isso e disse: *"por que você não usa visão computacional pra isso?"* Ele me incentivou, deu apoio técnico nas fases iniciais e foi a faísca que precisava. A partir daí, o que era uma curiosidade casual virou um projeto completo de engenharia.
+Um amigo meu, que já trabalhava com YOLO, me incentivou, deu apoio técnico nas fases iniciais e foi a faísca que precisava. A partir daí, o que era uma curiosidade casual virou um projeto de engenharia.
 
-O resultado que você vê aqui: **76 entradas e 561 passantes em 24 horas** — de uma quarta para uma quinta-feira, das 17h às 17h.
+O resultado que obtive foi: **76 entradas e 561 passantes em 24 horas** de uma quarta para uma quinta-feira, das 17h às 17h.
 
 ---
 
-## 🎯 Objetivo
+##  Objetivos
 
-Medir a **frequência de compra** e o **perfil de fluxo** de um pequeno varejo de bairro de forma autônoma, não-invasiva e de baixo custo, usando apenas uma câmera USB e hardware comum.
+Medir a **frequência de compra** e o **perfil de fluxo** de um pequeno mercado de bairro de forma autônoma, não-invasiva e de baixo custo, usando apenas uma câmera USB e hardware comum.
 
 **KPIs coletados:**
 | Métrica | Descrição |
 |---|---|
-| **Entradas** | Pessoas que efetivamente entraram no mercadinho |
+| **Entradas** | Pessoas que efetivamente entraram no mercado |
 | **Passantes** | Pessoas que passaram em frente mas não entraram |
 | **Taxa de conversão** | `entradas / (entradas + passantes) × 100` |
 | **Tempo de permanência** | Duração da visita do cliente na loja |
@@ -36,9 +36,9 @@ Medir a **frequência de compra** e o **perfil de fluxo** de um pequeno varejo d
 
 ---
 
-## 🧠 Multidisciplinaridade do Projeto
+##  Multidisciplinaridade
 
-Este projeto é um exemplo claro de que engenharia moderna exige múltiplas competências trabalhando juntas:
+Este projeto me exigiu que aprendesse novas competências:
 
 | Área | O que foi feito |
 |---|---|
@@ -52,36 +52,33 @@ Este projeto é um exemplo claro de que engenharia moderna exige múltiplas comp
 
 ---
 
-## 🔩 Hardware & Case Impresso em 3D
+## Hardware & Case da Câmera Impresso em 3D
 
-Uma das partes mais interessantes e menos óbvias do projeto foi **ter que projetar e fabricar um suporte físico** para a câmera.
+Uma das partes mais interessantes e menos óbvias do projeto foi **ter que projetar e fabricar um suporte físico** para a câmera, pois eu estava tendo muita dificuldade de pegar imagens para treinar em dias de chuva intensa e sol forte.
 
 ### Câmera: Logitech C920
 
-A câmera utilizada é a **Logitech C920**, uma webcam de qualidade profissional com suporte a **1080p/30fps** e lente de vidro — ideal para captura externa com boa nitidez mesmo em condições de baixa luminosidade.
+A câmera utilizada é a **Logitech C920**, uma webcam de **1080p/30fps** e lente de vidro.
 
 ### O Problema: Ambiente Externo
 
-A câmera precisa ficar posicionada em janela voltada para a rua, exposta a:
-- ☀️ Luz solar direta
-- 🌧️ Chuva e umidade
-- 🌡️ Variações de temperatura
+A câmera precisava ficar posicionada em janela voltada para a rua, e isso a deixava exposta a:
+- Luz solar direta
+- Chuva e umidade
+- Variações de temperatura
 
-O suporte original da Logitech C920 não serve para esse tipo de instalação. A solução foi **projetar e imprimir um case customizado**.
+E daí veio a solução de **projetar e imprimir um case customizado**.
 
 ### Solução: Modelagem + Impressão 3D
 
 <!-- IMAGEM: foto do case impresso em PETG montado na janela com a câmera -->
-![Case impresso em PETG com a Logitech C920 instalado na janela](.github/images/case_camera_instalado.png)
+<!-- ![Case impresso em PETG com a Logitech C920 instalado na janela](.github/images/case_camera_instalado.png) -->
 
 <!-- IMAGEM: render 3D / foto do modelo CAD do case -->
 ![Modelo 3D do case projetado para a Logitech C920](.github/images/case_render_3d.png)
 
 **Material utilizado: PETG**
-- Resistência à água e umidade
-- Suporta temperatura elevada (sol direto)
-- Mais durável que PLA para uso externo
-- Boa adesão entre camadas para estruturas funcionais
+- Foi utilizado o material PETG pois ele tem uma ótima proteção contra chuvas e suporta altas temperaturas, fazendo dele o material ideal para a instalação externa. Também existe o ABS, que é mais eficaz contra chuva e temperaturas altas, mas devido ao limite de hardware da minha impressora, não foi possível utilizar o ABS.
 
 > 📎 **O arquivo `.stl` do case está disponível neste repositório** para quem quiser replicar a instalação com a mesma câmera.
 > 
@@ -91,26 +88,7 @@ O suporte original da Logitech C920 não serve para esse tipo de instalação. A
 
 ## 📐 Arquitetura do Sistema
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        PIPELINE PRINCIPAL                           │
-│                                                                     │
-│  ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌─────────────┐  │
-│  │  Câmera  │───▶│  YOLOv8  │───▶│   SORT   │───▶│  Máquina   │  │
-│  │ C920 USB │    │ fine-tune│    │ Tracker  │    │  de Estado  │  │
-│  └──────────┘    └──────────┘    └──────────┘    └──────┬──────┘  │
-│                                                          │         │
-│                                              ┌───────────▼──────┐  │
-│                                              │   PostgreSQL     │  │
-│                                              │  (Star Schema)   │  │
-│                                              └───────┬──────────┘  │
-│                              ┌────────────────────────┤           │
-│                    ┌─────────▼──────┐      ┌──────────▼────────┐  │
-│                    │   Streamlit    │      │     Power BI      │  │
-│                    │   Dashboard   │      │    Analytics      │  │
-│                    └────────────────┘      └───────────────────┘  │
-└─────────────────────────────────────────────────────────────────────┘
-```
+![Arquitetura do sistema](.github/images/PipeLinePrincipal.png)
 
 ---
 
@@ -136,7 +114,7 @@ O coração da lógica de contagem é uma **máquina de estados por pessoa rastr
                             │
                             ▼
                     ┌───────────────┐
-                    │  CANDIDATO   │  ← Pessoa na área de interesse
+                    │  CANDIDATO    │  ← Pessoa na área de interesse
                     └───────┬───────┘
                             │
            ┌────────────────┼──────────────────┐
@@ -146,15 +124,15 @@ O coração da lógica de contagem é uma **máquina de estados por pessoa rastr
            │                │               por 60 frames]
            ▼                ▼                   │
     ┌──────────────┐ ┌──────────────┐           │
-    │   ENTROU    │ │    PASSOU    │◀──────────┘
+    │   ENTROU     │ │    PASSOU    │ ◀─────────┘
     └──────┬───────┘ └──────────────┘
            │
     [Cruza Linha
-     Entrada ←]
+       Entrada ←]
            │
            ▼
     ┌──────────────┐
-    │     SAIU    │  ← Fecha sessão no banco (calcula permanência)
+    │     SAIU     │  ← Fecha sessão no banco (calcula permanência)
     └──────────────┘
 ```
 
