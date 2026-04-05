@@ -4,8 +4,24 @@
 
 ---
 
-<!-- IMAGEM: screenshot do sistema rodando em tempo real com as linhas e contadores
-![Sistema em operação — câmera posicionada na rua, mostrando linhas de contagem e painel de métricas](.github/images/sistema_funcionando.png) -->
+### 📹 Sistema em operação — (4x)
+
+https://github.com/user-attachments/assets/.github/images/Video%20final%20compilado%20Dia%204x.mp4
+
+<details>
+<summary>🔗 <b>Se o vídeo não carregar acima, clique aqui</b></summary>
+<br>
+
+O vídeo está disponível em: [`.github/images/Video final compilado Dia 4x.mp4`](.github/images/Video%20final%20compilado%20Dia%204x.mp4)
+
+</details>
+
+> [!IMPORTANT]
+> **⚖️ Nota de Privacidade e Ética / Privacy & Ethics Notice**
+>
+> 🇧🇷 As imagens e vídeos apresentados neste repositório são utilizados **exclusivamente para fins didáticos e acadêmicos**. O sistema realiza apenas **detecção e contagem de pessoas** — não há qualquer intenção ou capacidade de identificação individual. Nenhum dado biométrico é coletado ou armazenado. Os vídeos originais utilizados para treinar a IA **já foram apagados** após a conclusão do treinamento.
+>
+> 🇺🇸 All images and videos in this repository are used **exclusively for educational and academic purposes**. The system only performs **people detection and counting** — there is no intent or capability to identify individuals. No biometric data is collected or stored. The original training videos **have been deleted** after training was completed.
 
 ---
 
