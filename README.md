@@ -1,6 +1,6 @@
 # 🛒 DeepMarket Tracker
 
-> **Visão computacional aplicada ao varejo de bairro** — contagem inteligente de clientes em um mercadado autônomo usando YOLOv8, tracking multi-objeto e análise de dados em tempo real.
+> **Visão computacional aplicada ao varejo de bairro** — contagem inteligente de clientes em um mercado autônomo usando YOLOv8, tracking multi-objeto e análise de dados em tempo real.
 
 ---
 
@@ -21,7 +21,7 @@ O resultado que obtive foi: **76 entradas e 561 passantes em 24 horas** de uma q
 
 ---
 
-##  Objetivos
+## Objetivos
 
 Medir a **frequência de compra** e o **perfil de fluxo** de um pequeno mercado de bairro de forma autônoma, não-invasiva e de baixo custo, usando apenas uma câmera USB e hardware comum.
 
@@ -31,12 +31,12 @@ Medir a **frequência de compra** e o **perfil de fluxo** de um pequeno mercado 
 | **Entradas** | Pessoas que efetivamente entraram no mercado |
 | **Passantes** | Pessoas que passaram em frente mas não entraram |
 | **Taxa de conversão** | `entradas / (entradas + passantes) × 100` |
-| **Tempo de permanência** | Duração da visita do cliente na loja |
-| **Fluxo por hora/turno** | Distribuição ao longo do dia |
+| **Tempo de permanência** | Duração da visita do cliente na loja *(planejado para versão futura com banco de dados)* |
+| **Fluxo por hora/turno** | Distribuição ao longo do dia *(planejado para versão futura com banco de dados)* |
 
 ---
 
-##  Multidisciplinaridade
+## Multidisciplinaridade
 
 Este projeto me exigiu que aprendesse novas competências:
 
@@ -44,10 +44,10 @@ Este projeto me exigiu que aprendesse novas competências:
 |---|---|
 | **Visão Computacional** | Detecção de pessoas com YOLOv8 fine-tuned |
 | **Machine Learning** | Coleta de dataset, rotulação, treinamento e avaliação |
-| **Engenharia de Software** | Sistema de tracking, máquina de estados, persistência em banco |
-| **Banco de Dados** | Modelagem Star Schema para análise OLAP e Power BI |
-| **BI / Analytics** | Dashboard Streamlit + queries para Power BI |
-| **Engenharia Mecânica / Design** | Modelagem 3D e impressão de case para câmera |
+| **Engenharia de Software** | Sistema de tracking, máquina de estados, lógica de contagem |
+| **Banco de Dados** | Modelagem Star Schema (planejada para versão futura) |
+| **BI / Analytics** | Dashboard Streamlit (planejado para versão futura) |
+| **Engenharia Mecânica / Design** | Modelagem 3D e impressão de case para câmera (PETG) |
 | **Eletrônica / Infraestrutura** | Posicionamento, alimentação e proteção do hardware externo |
 
 ---
@@ -80,8 +80,8 @@ E daí veio a solução de **projetar e imprimir um case customizado**.
 **Material utilizado: PETG**
 - Foi utilizado o material PETG pois ele tem uma ótima proteção contra chuvas e suporta altas temperaturas, fazendo dele o material ideal para a instalação externa. Também existe o ABS, que é mais eficaz contra chuva e temperaturas altas, mas devido ao limite de hardware da minha impressora, não foi possível utilizar o ABS.
 
-> 📎 **O arquivo `.stl` do case está disponível neste repositório** para quem quiser replicar a instalação com a mesma câmera.
-> 
+> 📎 **O arquivo `.3mf` do case está disponível neste repositório** para quem quiser replicar a instalação com a mesma câmera.
+>
 > Arquivo: [`case_logitech_c920_externo.3mf`](./hardware/case_logitech_c920_externo.3mf)
 
 ---
@@ -94,7 +94,7 @@ E daí veio a solução de **projetar e imprimir um case customizado**.
 
 ## 🔀 Máquinas de Estado
 
-O coração da lógica de contagem é uma **máquina de estados por pessoa rastreada**. Cada `track_id` gerado pelo SORT possui seu próprio estado independente.
+O coração da lógica de contagem é uma **máquina de estados por pessoa rastreada**. Cada `track_id` gerado pelo ByteTrack possui seu próprio estado independente.
 
 ### Máquina de Estado: Pessoa Rastreada
 
@@ -107,7 +107,7 @@ O coração da lógica de contagem é uma **máquina de estados por pessoa rastr
                             │
                             ▼
                     ┌───────────────┐
-                    │     NONE      │  ← Estado inicial
+                    │  Sem Classif. │  ← Estado inicial
                     └───────┬───────┘
                             │
               [Cruza Linha A OU Linha B]
@@ -120,7 +120,7 @@ O coração da lógica de contagem é uma **máquina de estados por pessoa rastr
            ┌────────────────┼──────────────────┐
            │                │                  │
     [Cruza Linha         [Cruza Linha       [Desaparece sem
-     Entrada →]          B apenas]         cruzar Entrada
+     Entrada →]          A e B]            cruzar Entrada
            │                │               por 60 frames]
            ▼                ▼                   │
     ┌──────────────┐ ┌──────────────┐           │
@@ -132,7 +132,7 @@ O coração da lógica de contagem é uma **máquina de estados por pessoa rastr
            │
            ▼
     ┌──────────────┐
-    │     SAIU     │  ← Fecha sessão no banco (calcula permanência)
+    │     SAIU     │  ← Exibe estado na tela (banco de dados planejado)
     └──────────────┘
 ```
 
@@ -162,30 +162,6 @@ O coração da lógica de contagem é uma **máquina de estados por pessoa rastr
 ![Visão da câmera com as 3 linhas de contagem anotadas](.github/images/diagrama_linhas.png)
 ```
 
-### Máquina de Estado: Sessão no Banco de Dados
-
-```
-         [Evento: ENTROU]
-                │
-                ▼
-    ┌───────────────────────┐
-    │  fato_sessao criado   │
-    │  entrada_time = NOW() │
-    │  converteu = TRUE     │
-    └───────────┬───────────┘
-                │
-        [Sistema rodando...]
-                │
-        [Evento: SAIU]
-                │
-                ▼
-    ┌─────────────────────────────────────┐
-    │  fato_sessao atualizado             │
-    │  saida_time = NOW()                 │
-    │  tempo_permanencia_seg = EPOCH diff │
-    └─────────────────────────────────────┘
-```
-
 ---
 
 ## ⚠️ Desafio Principal: A Mureta de Oclusão
@@ -201,25 +177,24 @@ O mercadinho possui uma **mureta de alvenaria no meio da entrada**, dividindo o 
 
 Consequências diretas:
 1. **O tracker perde o ID** da pessoa no intervalo de oclusão
-2. Quando a pessoa reaparece do outro lado, o SORT **atribui um novo ID**
+2. Quando a pessoa reaparece do outro lado, o ByteTrack **pode atribuir um novo ID**
 3. A mesma pessoa físicamente pode ser contada **duas vezes**
 4. Ou pior: entra como `CANDIDATO` e nunca cruza a linha de entrada registrada
 
 ### Soluções Implementadas
 
-**1. Ajuste do `max_age` do SORT**
+**1. Uso do ByteTrack com re-associação robusta**
 ```python
-tracker = Sort(
-    max_age=100,       # 100 frames tolerados sem detecção (~3.3s a 30fps)
-    min_hits=2,        # mínimo de detecções para criar track
-    iou_threshold=0.15 # IoU baixo = mais tolerante a reposicionamento
-)
+results = model.track(imagem,
+                      persist=True,
+                      conf=0.30,
+                      tracker="bytetrack.yaml")
 ```
-O `max_age=100` permite que o tracker "aguarde" a pessoa reaparecer do outro lado da mureta antes de descartar o ID.
+O ByteTrack é superior ao SORT original para cenários de oclusão, pois mantém tracklets de baixa confiança e os reassocia quando a pessoa reaparece.
 
 **2. Lógica de desaparecimento com timer**
 ```python
-LIMIAR_DESAPARECIDO = 60  # ~2s a 30fps
+LIMIAR_DESAPARECIDO = 60   # ~2s a 30fps
 
 # Se pessoa some como CANDIDATO por N frames → conta como PASSOU
 if est["frames_sem_ver"] == LIMIAR_DESAPARECIDO and est["estado"] == "CANDIDATO":
@@ -238,7 +213,11 @@ Mesmo que o tracker (erroneamente) reatribua o mesmo ID, cada ID só é contado 
 
 ---
 
-## Modelo de Dados — Star Schema
+## 🗄️ Banco de Dados (Trabalho Futuro)
+
+A persistência de dados em banco é uma etapa planejada e já prototipada, **ainda não integrada na versão atual de produção**.
+
+A modelagem adotada é um **Star Schema** para suportar análise OLAP e conexão com Power BI:
 
 ```
                     ┌──────────────┐
@@ -274,17 +253,10 @@ Mesmo que o tracker (erroneamente) reatribua o mesmo ID, cada ID só é contado 
 └──────────────┘
 ```
 
----
-
-## Dashboard
-
-O dashboard (`dashboard.py`) exibe em tempo real:
-
-- **Métricas de hoje**: Entradas, Lotação atual, Passantes, Tempo médio de permanência
-- **Fluxo por hora**: Gráfico de linha com Entradas vs Passantes
-- **Tendência diária**: Últimos 30 dias
-- **Análise por turno**: Manhã / Tarde / Noite
-- **Insights automáticos**: Taxa de conversão com sugestões contextuais
+Quando implementado, permitirá:
+- Registro do tempo de permanência por visita
+- Dashboard Streamlit com fluxo por hora e turno
+- Análise de tendências via Power BI
 
 ---
 
@@ -293,32 +265,22 @@ O dashboard (`dashboard.py`) exibe em tempo real:
 ```
 projetoIAmercadinho/
 │
-├── main.py                    # ← Pipeline principal: câmera → YOLO → SORT → banco
-├── dashboard.py               # ← Dashboard Streamlit (analytics)
-├── sort.py                    # ← Algoritmo SORT de tracking
-│
-├── banco/
-│   ├── 01_schema.sql          # ← Criação das tabelas (Star Schema)
-│   ├── 02_populate_dims.sql   # ← Popula dimensões (datas, horas)
-│   ├── 03_migrate_data.sql    # ← Migração de dados legados
-│   ├── 04_powerbi_queries.sql # ← Queries otimizadas para Power BI
-│   └── run_setup.py           # ← Setup automático do banco
-│
-├── treinar_yolov8.py          # ← Treinamento do modelo customizado
+├── main.py                    # ← Pipeline principal: câmera → YOLOv8s → ByteTrack → tela
+├── treinar_yolov8.py          # ← Treinamento do modelo customizado (YOLOv8s)
 ├── extrair_frames.py          # ← Extração de frames dos vídeos de coleta
-├── avaliar_modelo.py          # ← Avaliação de métricas do modelo
-├── auto_rotular_yolo.py       # ← Auto-rotulação (Gemini Vision)
-├── unificar_classes.py        # ← Unificação de labels do dataset
-├── baixar_dataset.py          # ← Download do dataset do Roboflow
 │
 ├── data.yaml                  # ← Configuração do dataset (formato YOLOv8)
 │
-├── hardware/
-│   └── case_logitech_c920_externo.stl  # ← Case impresso em 3D (PETG)
+├── train/                     # ← Imagens e labels de treino (2.051 imagens)
+├── valid/                     # ← Imagens e labels de validação (599 imagens)
+├── test/                      # ← Imagens de teste
 │
-├── Videos/                    # ← Vídeos de coleta de dados
-├── Yolo-Weights/              # ← Pesos do modelo treinado
-└── .env                       # ← Variáveis de ambiente (credenciais DB)
+├── Yolo-Weights/              # ← Pesos base para fine-tuning (yolov8s.pt)
+│
+├── hardware/
+│   └── case_logitech_c920_externo.3mf  # ← Case impresso em 3D (PETG)
+│
+└── .env                       # ← Variáveis de ambiente (futuro — credenciais DB)
 ```
 
 ---
@@ -328,26 +290,7 @@ projetoIAmercadinho/
 ### Pré-requisitos
 
 ```bash
-pip install ultralytics opencv-python cvzone psycopg2-binary streamlit plotly python-dotenv
-```
-
-### Configuração do Banco de Dados
-
-1. Crie um banco PostgreSQL
-2. Configure o `.env`:
-
-```env
-POSTGRES_HOST=localhost
-POSTGRES_PORT=5432
-POSTGRES_DB=deepmarket
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=sua_senha
-```
-
-3. Execute o setup:
-
-```bash
-python banco/run_setup.py
+pip install ultralytics opencv-python cvzone torch
 ```
 
 ### Rodando o sistema de contagem
@@ -359,16 +302,10 @@ python main.py
 Na primeira execução, uma janela interativa abrirá para você **desenhar as 3 linhas** clicando na imagem:
 
 1. **Linha A** (laranja) — antes da bifurcação
-2. **Linha Entrada** (verde) — acesso ao mercadinho  
+2. **Linha Entrada** (verde) — acesso ao mercadinho
 3. **Linha B** (vermelho) — passagem reta
 
 Pressione `R` para desfazer um ponto e `ENTER` para confirmar.
-
-### Rodando o Dashboard
-
-```bash
-streamlit run dashboard.py
-```
 
 ### Usando vídeo em vez da câmera
 
@@ -379,6 +316,14 @@ cap = cv2.VideoCapture(0)  # webcam
 cap = cv2.VideoCapture("Videos/seu_video.mp4")
 ```
 
+### Treinando o modelo
+
+```bash
+python treinar_yolov8.py
+```
+
+O treino requer GPU (CUDA). Com RTX 3060 (12 GB), 200 épocas com YOLOv8s levam aproximadamente **1–2 horas**.
+
 ---
 
 ## 🤖 Modelo de Detecção
@@ -387,8 +332,9 @@ cap = cv2.VideoCapture("Videos/seu_video.mp4")
 
 O dataset foi construído de forma iterativa ao longo de vários experimentos:
 
-- ~1.800 imagens extraídas de vídeos gravados no local com `extrair_frames.py` (1 frame a cada N para evitar redundância)
-- Rotulação centralizada na plataforma **Roboflow**
+- **2.051 imagens de treino** + **599 de validação** extraídas de vídeos gravados no local
+- Frames extraídos com `extrair_frames.py` (1 frame a cada N para evitar redundância)
+- Rotulação centralizada na plataforma **Roboflow** (projeto `minismartunifei v3`)
 - **Primeira tentativa**: auto-rotulação via **Gemini Vision API** — o limite de requisições gratuitas foi atingido antes de concluir, interrompendo o processo
 - **Solução adotada**: rotulação manual no Roboflow — demorada, mas garantiu qualidade
 - **Refinamento contínuo**: ao longo dos experimentos, continuamos usando a **mesma IA (Gemini)** para revisar e melhorar os labels existentes, corrigindo casos-limite e regiões de oclusão — cada ciclo de revisão gerava uma versão mais robusta do dataset
@@ -397,24 +343,79 @@ Esse processo de **loop humano + IA** foi fundamental para chegar nos resultados
 
 ### Evolução dos Experimentos
 
-O modelo passou por múltiplas iterações de dataset e hiperparâmetros. Cada experimento foi numerado sequencialmente (ex: `mercadinho_experimento85`) e salvo separadamente para rastreabilidade.
+O modelo passou por múltiplas iterações de dataset e hiperparâmetros. Cada experimento foi numerado sequencialmente (ex: `mercadinho_experimento815`) e salvo separadamente para rastreabilidade.
 
-### Treinamento (Experimento atual)
+A principal mudança nesta fase foi a **migração do YOLOv8n (nano) para o YOLOv8s (small)**, priorizando precisão em detrimento de velocidade — tradeoff adequado para câmera estática com apenas 1–2 pessoas visíveis por frame.
+
+### Treinamento (Experimento atual — `mercadinho_experimento815`)
 
 ```
 Hardware:   NVIDIA RTX 3060 (12 GB VRAM)
-Modelo:     YOLOv8n (nano — velocidade > precisão, ideal para inferência em tempo real)
-Épocas:     100
-Duração:    ~31 minutos
-Parâmetros: 3.006.038
-GFLOPs:     8.1
+Modelo:     YOLOv8s (small — melhor equilíbrio precisão/velocidade para dataset médio)
+Épocas:     200
+Batch:      12 (AutoBatch a 60% VRAM)
+Parâmetros: 11.136.374
+GFLOPs:     28.6
+Optimizer:  AdamW (lr=0.001)
+Imagens:    2.051 treino | 599 validação
 ```
 
-### Resultados
+**Augmentations aplicadas:**
+- Flip horizontal: 70% | Flip vertical: desativado
+- Variação de brilho (hsv_v=0.6), saturação (hsv_s=0.8)
+- Rotação leve (5°), translação (0.15), zoom (0.5)
+- Mosaic: 100% | Mixup: desativado
+
+### Resultados (conjunto de validação — 599 imagens, 723 instâncias)
 
 ```
-Precision: 0.893   Recall: 0.870   mAP50: 0.921   mAP50-95: 0.551
+Class   Images  Instances   Box(P)     R     mAP50  mAP50-95
+all       599       723      0.911   0.884   0.928    0.577
+0         510       723      0.911   0.884   0.928    0.577
 ```
+
+| Métrica | Valor | Interpretação |
+|---|---|---|
+| **Precision** | 0.911 | 91.1% das detecções são corretas |
+| **Recall** | 0.884 | 88.4% das pessoas reais são detectadas |
+| **mAP50** | 0.928 | Excelente — IoU ≥ 0.50 |
+| **mAP50-95** | 0.577 | Bom para dataset de câmera fixa em cena urbana |
+
+**Velocidade de inferência:** 0.2ms pré-proc | 2.7ms inferência | 1.4ms pós-proc por imagem
+
+---
+
+### 📈 Gráficos de Treinamento
+
+**Evolução das métricas durante as épocas**
+
+![Resultados do Treinamento](.github/images/results.png)
+
+*As curvas de loss (box, cls, dfl) de treino e validação convergem consistentemente sem divergência, indicando ausência de overfitting. As métricas de mAP50 e mAP50-95 crescem de forma estável ao longo das épocas, estabilizando em patamares altos.*
+
+---
+
+**Curva Precision-Recall**
+
+![Curva Precision-Recall](.github/images/BoxPR_curve.png)
+
+*A curva PR é o padrão ouro em visão computacional. Com **mAP@0.5 = 0.928**, o modelo mantém alta precisão mesmo ao tentar recuperar a grande maioria dos objetos na cena — desempenho sólido para um dataset específico de câmera fixa em ambiente urbano.*
+
+---
+
+**Matriz de Confusão Normalizada**
+
+![Matriz de Confusão Normalizada](.github/images/confusion_matrix_normalized.png)
+
+*A matriz mostra que o modelo acerta **93% das detecções na classe alvo**, com apenas 7% classificado como background (falsos negativos). A baixa taxa de confusão valida a robustez do modelo para o caso de uso real.*
+
+---
+
+**Distribuição dos Labels (Análise Exploratória do Dataset)**
+
+![Distribuição dos Labels](.github/images/labels.jpg)
+
+*Análise das anotações de treino: distribuição das bounding boxes e sua concentração espacial nas imagens. Confirma que o modelo foi treinado com boa variedade de posicionamentos — pessoas no centro, nas bordas e em diferentes escalas.*
 
 ---
 
@@ -438,13 +439,13 @@ Precision: 0.893   Recall: 0.870   mAP50: 0.921   mAP50-95: 0.551
 
 | Dificuldade | Solução |
 |---|---|
-| **Oclusão da mureta** na entrada do mercadinho | Ajuste fino do `max_age` do SORT + lógica de desaparecimento com timer |
+| **Oclusão da mureta** na entrada do mercadinho | ByteTrack com re-associação + timer de 60 frames para CANDIDATOS |
 | Câmera em ambiente **externo** sem proteção | Modelagem e impressão 3D de case em PETG resistente à água e UV |
 | Limite de créditos da API Gemini para auto-rotulação | Rotulação manual no Roboflow (~horas de trabalho manual) |
 | `curl -L` do Roboflow não funciona no **PowerShell/Windows** | Substituído por `Invoke-WebRequest` |
 | Dataset exportado no formato **COCO** por engano | Re-exportado no formato YOLOv8 correto |
-| IDs "fantasmas" com `max_age` alto no SORT | Ajustado para `max_age=100` + `iou_threshold=0.15` |
-| Pessoa contada duas vezes após reaparecer da oclusão | Sets de IDs já contados (`ids_ja_contados_entrada`, `ids_ja_contados_passou`) |
+| IDs "fantasmas" com tracker após oclusão | Sets de IDs já contados (`ids_ja_contados_entrada`, `ids_ja_contados_passou`) |
+| Classe única (pessoa) com 2 labels no data.yaml | `nc=2` sobrescrito para `nc=2` (classes `'0'` e `'1'` — artefato do Roboflow) |
 
 ---
 
@@ -452,16 +453,30 @@ Precision: 0.893   Recall: 0.870   mAP50: 0.921   mAP50-95: 0.551
 
 | Tecnologia | Uso |
 |---|---|
-| **YOLOv8** (Ultralytics) | Detecção de pessoas |
-| **SORT** | Tracking multi-objeto entre frames |
+| **YOLOv8s** (Ultralytics) | Detecção de pessoas — fine-tuned no dataset local |
+| **ByteTrack** (embutido no Ultralytics) | Tracking multi-objeto entre frames com re-associação robusta |
 | **OpenCV** | Captura de vídeo, desenho e interface |
-| **cvzone** | UI de bounding boxes |
-| **PostgreSQL** | Banco de dados (Star Schema) |
-| **psycopg2** | Conector Python → PostgreSQL |
-| **Streamlit** | Dashboard analítico |
-| **Plotly** | Gráficos interativos |
-| **Python-dotenv** | Gerenciamento de variáveis de ambiente |
+| **cvzone** | UI de bounding boxes e texto |
+| **PyTorch + CUDA** | Aceleração GPU no treinamento e inferência |
 | **Roboflow** | Plataforma de dataset e rotulação |
+| **Python-dotenv** | Gerenciamento de variáveis de ambiente (futuro) |
+| **PostgreSQL** *(planejado)* | Banco de dados Star Schema |
+| **Streamlit** *(planejado)* | Dashboard analítico |
+| **Plotly** *(planejado)* | Gráficos interativos |
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Detecção com YOLOv8 fine-tuned no ambiente real
+- [x] Tracking com ByteTrack + máquina de estados
+- [x] Contagem de entradas e passantes em tempo real
+- [x] Case 3D em PETG para câmera externa
+- [x] Interface interativa para definição das linhas
+- [ ] Persistência em banco de dados PostgreSQL (Star Schema)
+- [ ] Dashboard Streamlit com fluxo por hora, turno e dia
+- [ ] Integração Power BI para análise histórica
+- [ ] Registro de tempo de permanência por visita
 
 ---
 
