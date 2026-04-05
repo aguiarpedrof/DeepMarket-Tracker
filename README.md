@@ -6,13 +6,15 @@
 
 ### 📹 Sistema em operação — (4x)
 
-https://github.com/user-attachments/assets/.github/images/Video%20final%20compilado%20Dia%204x.mp4
+<video src="https://github.com/aguiarpedrof/DeepMarket-Tracker/raw/design-interface/.github/images/Video4x.mp4" controls="controls" muted="muted" style="max-width: 100%;">
+  O vídeo está disponível em: <a href="https://github.com/aguiarpedrof/DeepMarket-Tracker/raw/design-interface/.github/images/Video4x.mp4">baixar vídeo</a>
+</video>
 
 <details>
-<summary>🔗 <b>Se o vídeo não carregar acima, clique aqui</b></summary>
+<summary>🔗 <b>Se o player não aparecer acima, clique aqui</b></summary>
 <br>
 
-O vídeo está disponível em: [`.github/images/Video final compilado Dia 4x.mp4`](.github/images/Video%20final%20compilado%20Dia%204x.mp4)
+O arquivo fonte está em: [`.github/images/Video4x.mp4`](https://github.com/aguiarpedrof/DeepMarket-Tracker/raw/design-interface/.github/images/Video4x.mp4)
 
 </details>
 
