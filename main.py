@@ -7,12 +7,12 @@ import torch
 import numpy as np
 
 cap = cv2.VideoCapture(0)
-#cap = cv2.VideoCapture("Videos\\VideoTesteEntrandoPorBaixo.mp4")
+# cap = cv2.VideoCapture("Video teste.mp4")
 
 cap.set(3, 1280)
 cap.set(4, 720)
 
-model = YOLO(r"C:\Users\pedro\runs\detect\runs\treino\mercadinho_experimento86\weights\best.pt")
+model = YOLO(r"C:\Users\pedro\runs\detect\runs\treino\mercadinho_experimento89\weights\best.pt")
 
 DIRECAO_ENTRADA = 1   # troque para -1 se estiver contando no sentido errado
 
@@ -167,22 +167,25 @@ while True:
     for r in results:
         if r.boxes.id is None:
             continue
-        for box, tid in zip(r.boxes.xyxy, r.boxes.id):
+        for box, tid, conf in zip(r.boxes.xyxy, r.boxes.id, r.boxes.conf):
             x1, y1, x2, y2 = int(box[0]), int(box[1]), int(box[2]), int(box[3])
-            resultsTracker.append((x1, y1, x2, y2, int(tid)))
+            resultsTracker.append((x1, y1, x2, y2, int(tid), float(conf)))
 
-    for (x1, y1, x2, y2, iden) in resultsTracker:
+    for (x1, y1, x2, y2, iden, conf) in resultsTracker:
         w, h = x2 - x1, y2 - y1
 
-        cvzone.cornerRect(imagem, (x1, y1, w, h), l=7)
+        cvzone.cornerRect(imagem, (x1, y1, w, h), l=15, colorC=(255, 255, 255), colorR=(66, 124, 168))
 
         estado_atual = estados.get(iden, {}).get("estado", "NONE")
-        cvzone.putTextRect(imagem, f'{iden} [{estado_atual}]',
-                           (max(0, x1), max(20, y1)), scale=0.8, thickness=1, offset=5)
+        # cvzone.putTextRect(imagem, f'{iden} [{estado_atual}]',
+        #                    (max(0, x1), max(20, y1)), scale=0.8, thickness=1, offset=5, colorR=(77, 77, 77))
+
+        cvzone.putTextRect(imagem, f'[{estado_atual}] {conf:.0%}',
+                           (max(0, x1), max(20, y1)), scale=1, thickness=1, offset=5, colorR=(77, 77, 77))
 
         centrox = x1 + w // 2
         centroy = y2
-        cv2.circle(imagem, (centrox, centroy), 5, (255, 0, 255), cv2.FILLED)
+        cv2.circle(imagem, (centrox, centroy), 5, (255, 255, 255), cv2.FILLED)
 
         if iden not in estados:
             estados[iden] = {
@@ -240,7 +243,7 @@ while True:
 
     LIMIAR_DESAPARECIDO = 60   # ~2s a 30fps
 
-    ids_neste_frame = {iden for (_, _, _, _, iden) in resultsTracker}
+    ids_neste_frame = {iden for (_, _, _, _, iden, _conf) in resultsTracker}
 
     for iden_old, est in list(estados.items()):
         if iden_old in ids_neste_frame:

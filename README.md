@@ -1,11 +1,11 @@
 # 🛒 DeepMarket Tracker
 
-> **Visão computacional aplicada ao varejo de bairro** — contagem inteligente de clientes em um mercadinho usando YOLOv8, tracking multi-objeto e análise de dados em tempo real.
+> **Visão computacional aplicada ao varejo de bairro** — contagem inteligente de clientes em um mercadado autônomo usando YOLOv8, tracking multi-objeto e análise de dados em tempo real.
 
 ---
 
-<!-- IMAGEM: screenshot do sistema rodando em tempo real com as linhas e contadores -->
-![Sistema em operação — câmera posicionada na rua, mostrando linhas de contagem e painel de métricas](.github/images/sistema_funcionando.png)
+<!-- IMAGEM: screenshot do sistema rodando em tempo real com as linhas e contadores
+![Sistema em operação — câmera posicionada na rua, mostrando linhas de contagem e painel de métricas](.github/images/sistema_funcionando.png) -->
 
 ---
 

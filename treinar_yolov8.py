@@ -22,11 +22,11 @@ if __name__ == '__main__':
         data="data.yaml",           # aponta para train/valid/test do novo dataset
 
         # Configurações gerais
-        epochs=100,                 # aumente para 100 se o dataset for grande
+        epochs=200,                 # aumente para 100 se o dataset for grande
         imgsz=640,
         batch=-1,                  # reduza para 8 se der OOM na GPU
         device=dispositivo,
-        workers=4,                 # threads de carregamento de dados
+        workers=0,                 # 0 = thread principal (obrigatório no Windows para evitar travamento)
         project="runs/treino",     # pasta onde os resultados serão salvos
         name="mercadinho_experimento8",              # novo experimento com o novo dataset
         exist_ok=False,                 # False garante que cada treino seja salvo separadamente!
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         flipud=0.0,                # Flip vertical — desativado (pessoa de cabeça pra baixo não faz sentido)
         fliplr=0.7,                # Flip horizontal — 50% das imagens
         hsv_v=0.6,                 # Variação de brilho (simula dia/noite)
-        hsv_s=0.4,                 # Variação de saturação 0.8
+        hsv_s=0.8,                 # Variação de saturação 0.8
         hsv_h=0.018,               # Leve variação de matiz
         degrees=5.0,               # Rotação leve (câmeras ligeiramente tortas)
         translate=0.15,             # Translação leve
