@@ -1,10 +1,7 @@
 import time
 from ultralytics import YOLO
 import cv2
-import math
 import cvzone
-import torch
-import numpy as np
 
 cap = cv2.VideoCapture(0)
 # cap = cv2.VideoCapture("Video teste.mp4")
@@ -145,8 +142,8 @@ if LINHA_A is None or LINHA_ENTRADA is None or LINHA_B is None:
 pTime = 0
 
 while True:
-    suucccess, imagem = cap.read()
-    if not suucccess:
+    success, imagem = cap.read()
+    if not success:
         break
 
     results = model.track(imagem,
