@@ -1,4 +1,5 @@
 import time
+from typing import List, Tuple, Any
 from ultralytics import YOLO
 import cv2
 import cvzone
@@ -24,12 +25,16 @@ _CORES_LINHAS = [
     ((0, 0, 255),   "Linha B (passou reto)"),
 ]
 
-def _mouse_callback_unico(event, x, y, flags, param):
+def _mouse_callback_unico(event: int, x: int, y: int, flags: int, param: Any) -> None:
+    """Callback para capturar cliques do mouse e armazenar pontos interativos na tela."""
     if event == cv2.EVENT_LBUTTONDOWN and len(_pontos_interativos) < 6:
         _pontos_interativos.append((x, y))
 
-def _definir_linhas_interativo(frame_base):
-
+def _definir_linhas_interativo(frame_base: Any) -> Tuple[List[Tuple[int, int]], List[Tuple[int, int]], List[Tuple[int, int]]]:
+    """
+    Inicia uma interface interativa para o usuário definir 3 linhas de controle clicando na tela.
+    Retorna as tuplas de coordenadas (LINHA_A, LINHA_ENTRADA, LINHA_B).
+    """
     global _pontos_interativos
     _pontos_interativos = []
 
@@ -93,13 +98,21 @@ def _definir_linhas_interativo(frame_base):
         [pts[4], pts[5]],   # LINHA_B
     )
 
-def lado_da_linha(ponto, p1, p2):
+def lado_da_linha(ponto: Tuple[int, int], p1: Tuple[int, int], p2: Tuple[int, int]) -> int:
+    """
+    Determina de qual lado da linha infinita p1-p2 o ponto fornecido está.
+    Retorna > 0 para um lado, < 0 para o outro, e 0 se for colinear.
+    """
     x,  y  = ponto
     x1, y1 = p1
     x2, y2 = p2
     return (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1)
 
-def cruzou_linha(pos_atual, pos_anterior, linha):
+def cruzou_linha(pos_atual: Tuple[int, int], pos_anterior: Tuple[int, int], linha: List[Tuple[int, int]]) -> int:
+    """
+    Verifica se o deslocamento entre pos_anterior e pos_atual intercepta o segmento de reta 'linha'.
+    Retorna 1 ou -1 dependendo da direção do cruzamento, e 0 se não cruzou.
+    """
     p1, p2 = linha
     lado_atual    = lado_da_linha(pos_atual,    p1, p2)
     lado_anterior = lado_da_linha(pos_anterior, p1, p2)
