@@ -4,15 +4,24 @@ from ultralytics import YOLO
 import cv2
 import cvzone
 
-cap = cv2.VideoCapture(0)
+# --- CONFIGURAÇÕES ---
+CAMERA_ID = 0
+CAP_WIDTH = 1280
+CAP_HEIGHT = 720
+MODEL_PATH = r"C:\Users\pedro\runs\detect\runs\treino\mercadinho_experimento89\weights\best.pt"
+CONFIDENCE_THRESHOLD = 0.30
+TRACKER_TYPE = "bytetrack.yaml"
+LIMIAR_DESAPARECIDO = 60   # ~2s a 30fps
+DIRECAO_ENTRADA = 1   # troque para -1 se estiver contando no sentido errado
+# ---------------------
+
+cap = cv2.VideoCapture(CAMERA_ID)
 # cap = cv2.VideoCapture("Video teste.mp4")
 
-cap.set(3, 1280)
-cap.set(4, 720)
+cap.set(3, CAP_WIDTH)
+cap.set(4, CAP_HEIGHT)
 
-model = YOLO(r"C:\Users\pedro\runs\detect\runs\treino\mercadinho_experimento89\weights\best.pt")
-
-DIRECAO_ENTRADA = 1   # troque para -1 se estiver contando no sentido errado
+model = YOLO(MODEL_PATH)
 
 LINHA_A       = None
 LINHA_ENTRADA = None
@@ -161,8 +170,8 @@ while True:
 
     results = model.track(imagem,
                           persist=True,
-                          conf=0.30,
-                          tracker="bytetrack.yaml")
+                          conf=CONFIDENCE_THRESHOLD,
+                          tracker=TRACKER_TYPE)
 
     cv2.line(imagem, LINHA_A[0],       LINHA_A[1],       (255, 165, 0), 3)
     cv2.line(imagem, LINHA_ENTRADA[0], LINHA_ENTRADA[1], (0, 171, 6),   3)
@@ -250,8 +259,6 @@ while True:
         estados[iden]["pos_anterior"] = pos_atual
         estados[iden]["frames_sem_ver"] = 0
 
-
-    LIMIAR_DESAPARECIDO = 60   # ~2s a 30fps
 
     ids_neste_frame = {iden for (_, _, _, _, iden, _conf) in resultsTracker}
 
