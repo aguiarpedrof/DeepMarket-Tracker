@@ -1,14 +1,20 @@
+import argparse
 import time
 from typing import List, Tuple, Any
 from ultralytics import YOLO
 import cv2
 import cvzone
 
+# --- ARGUMENTOS DE LINHA DE COMANDO ---
+parser = argparse.ArgumentParser(description="DeepMarket Tracker - Contagem de pessoas com YOLOv8")
+parser.add_argument('--model', type=str, default='best.pt', help='Caminho para o modelo YOLOv8 treinado (.pt)')
+args = parser.parse_args()
+
 # --- CONFIGURAÇÕES ---
 CAMERA_ID = 0
 CAP_WIDTH = 1280
 CAP_HEIGHT = 720
-MODEL_PATH = r"C:\Users\pedro\runs\detect\runs\treino\mercadinho_experimento89\weights\best.pt"
+MODEL_PATH = args.model
 CONFIDENCE_THRESHOLD = 0.30
 TRACKER_TYPE = "bytetrack.yaml"
 LIMIAR_DESAPARECIDO = 60   # ~2s a 30fps
