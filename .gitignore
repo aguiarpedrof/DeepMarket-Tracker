@@ -1,65 +1,42 @@
-# ==============================================
-# Segredos e variáveis de ambiente
-# ==============================================
+# Ambiente e Segredos
 .env
 *.key
 *.pem
+
+# Códigos auxiliares de desenvolvimento
 /extrair_frames.py
 /avaliar_modelo.py
 /sort.py
-# ==============================================
-# Ambiente virtual Python (não subir dependências)
-# ==============================================
+
+# Ambientes virtuais e Cache Python
 venv/
 env/
 .venv/
-
-# ==============================================
-# Cache do Python (gerado automaticamente)
-# ==============================================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 
-# ==============================================
-# Banco de dados local (arquivo gerado, não o código)
-# ==============================================
-*.sqlite3
-*.db
-
-# ==============================================
-# Pesos e modelos YOLO (arquivos pesados)
-# ==============================================
+# Modelos, pesos e saídas do YOLO (arquivos pesados)
 Yolo-Weights/
 *.pt
 *.onnx
+runs/
 
-# ==============================================
-# Vídeos, frames e dados brutos
-# ==============================================
+# Datasets, mídias e dados locais
 Videos/
 frames_dataset/
 novos_frames*/
-
-# ==============================================
-# Resultados e artefatos de treino
-# ==============================================
-runs/
-
-# ==============================================
-# Datasets baixados (pastas padrão do YOLO)
-# ==============================================
 train/
 valid/
 test/
+*.sqlite3
+*.db
 *.zip
 *.cache
 
-# ==============================================
-# Arquivos gerados por IDEs e sistemas
-# ==============================================
+# Configurações de IDEs, Sistemas e Logs
 .vscode/
 .vs/
 .idea/
@@ -68,9 +45,5 @@ test/
 .DS_Store
 Thumbs.db
 desktop.ini
-
-# ==============================================
-# Logs
-# ==============================================
 *.log
 logs/
