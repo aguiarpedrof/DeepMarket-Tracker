@@ -3,13 +3,11 @@ import os
 import glob
 import time
 
-# ═══════════════════════════════════════════════════
-# CONFIGURACOES
-# ═══════════════════════════════════════════════════
+
 PASTA_VIDEOS       = "Videos"
 PASTA_SAIDA        = "novos_frames5"
 SEGUNDOS_POR_FRAME = 5    # 1 frame a cada N segundos
-# ═══════════════════════════════════════════════════
+
 
 
 def formatar_tempo(seg):
