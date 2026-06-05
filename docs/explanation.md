@@ -35,42 +35,16 @@ A pipeline de processamento de imagem do sistema é dividida em quatro camadas p
 
 Diferente de sistemas de contagem simples que apenas contam quando um ponto cruza uma linha (o que gera muitas contagens falsas se a pessoa oscilar sobre a linha), o DeepMarket Tracker utiliza uma **Máquina de Estados Finita (FSM)** individual para cada ID gerado pelo tracker.
 
-```
-                    ┌─────────────────────────────────────────┐
-                    │             ESTADOS POSSÍVEIS           │
-                    └─────────────────────────────────────────┘
-
-               [Pessoa detectada pela 1ª vez]
-                             │
-                             ▼
-                    ┌───────────────┐
-                    │  Sem Classif. │  ← Estado inicial
-                    └───────┬───────┘
-                            │
-               [Cruza Linha A OU Linha B]
-                            │
-                            ▼
-                    ┌───────────────┐
-                    │  CANDIDATO    │  ← Pessoa na área de interesse
-                    └───────┬───────┘
-                            │
-           ┌────────────────┼──────────────────┐
-           │                │                  │
-    [Cruza Linha         [Cruza Linha       [Desaparece sem
-     Entrada →]          A e B]            cruzar Entrada
-           │                │               por 60 frames]
-           ▼                ▼                   │
-    ┌──────────────┐ ┌──────────────┐           │
-    │   ENTROU     │ │    PASSOU    │ ◀─────────┘
-    └──────┬───────┘ └──────────────┘
-           │
-    [Cruza Linha
-       Entrada ←]
-           │
-           ▼
-    ┌──────────────┐
-    │     SAIU     │  ← Fim do ciclo de contagem na tela
-    └──────────────┘
+```mermaid
+flowchart TD
+    A[Pessoa detectada pela primeira vez] --> B[Sem Classificacao]
+    B -->|Cruza Linha A ou Linha B| C[CANDIDATO]
+    
+    C -->|Cruza Linha Entrada no sentido interno| D[ENTROU]
+    C -->|Cruza Linha A e Linha B consecutivamente| E[PASSOU]
+    C -->|Desaparece da cena por mais de 60 frames| E
+    
+    D -->|Cruza Linha Entrada no sentido oposto| F[SAIU]
 ```
 
 ---
@@ -79,15 +53,17 @@ Diferente de sistemas de contagem simples que apenas contam quando um ponto cruz
 
 O layout de 3 linhas virtuais resolve a ambiguidade espacial de quem está apenas passando pela rua versus quem de fato tomou a decisão de entrar no mercado.
 
-```
-  [Rua / Calçada]
-  ────────────────────────────────────────────────────────
-       │               │                    │
-   Linha A          Linha             Linha B
-  (laranja)        Entrada           (vermelho)
-                   (verde)
-
-  ← Sentido de tráfego dos pedestres que passam reto
+```mermaid
+flowchart LR
+    subgraph Calçada
+        A[Linha A - Laranja] <--> B[Linha B - Vermelha]
+    end
+    subgraph Entrada do Estabelecimento
+        C[Linha Entrada - Verde]
+    end
+    
+    A -->|Bifurcação| C
+    B -->|Bifurcação| C
 ```
 
 - **Linha A (Laranja)**: Monitora a aproximação pelo lado esquerdo.
